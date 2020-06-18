@@ -1,0 +1,8 @@
+EPOCHS: 20
+latent_dim: 32
+rate: 0.0
+mlp_dims: [256, 128, 64]
+vocab_size: 30000
+embed_size: 784
+lr: 0.001
+model_save_weights_name: 'BERT_NER_data_dist_kl'
