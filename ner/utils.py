@@ -3,7 +3,7 @@ import ner
 import os
 import yaml
 
-def load_config(model_config_name='bert_ner_config_data_dist_kl.yaml', master_config_name='config.yaml'):
+def load_config(model_config_name='bert_ner_data_dist_kl_config.yaml', master_config_name='config.yaml'):
   with open(os.path.join(ner.CONFIG_DIR, master_config_name)) as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
   with open(os.path.join(ner.CONFIG_DIR, model_config_name)) as file:

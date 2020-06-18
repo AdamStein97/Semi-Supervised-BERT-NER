@@ -1,8 +1,8 @@
 csv_filename: 'preprocessed_ner_dataset.csv'
 max_seq_length: 50
-BATCH_SIZE: 128,
-BUFFER_SIZE: 2048,
-test_set_batches: 75,
+BATCH_SIZE: 128
+BUFFER_SIZE: 2048
+test_set_batches: 75
 labelled_train_batches: 20
 categories: 10
 

@@ -1,12 +1,13 @@
 from ner.trainers.baseline_ner_trainer import NER_BaselineTraininer
-from ner.models.baseline_ner import BaselineNER
 from ner.preprocessor import Preprocessor
+from ner.utils import load_config
 
-p = Preprocessor()
+config = load_config(model_config_name='baseline_ner_config.yaml', master_config_name='config.yaml')
 
-labelled_ds, unlabelled_ds, test_ds = p.create_tf_dataset()
+p = Preprocessor(**config)
 
-trainer = NER_BaselineTraininer()
+labelled_ds, unlabelled_ds, test_ds = p.create_tf_dataset(**config)
 
+trainer = NER_BaselineTraininer(**config)
 
-model = trainer.train(labelled_ds=labelled_ds, test_ds=test_ds)
+model = trainer.train(labelled_ds=labelled_ds, test_ds=test_ds, **config)
