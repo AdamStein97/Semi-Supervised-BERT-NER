@@ -1,0 +1,8 @@
+tensorflow
+tensorflow_hub
+seaborn
+bert-for-tf2
+matplotlib
+PyYaml
+pandas
+scikit-learn

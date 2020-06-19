@@ -4,7 +4,7 @@ import os
 import ner
 from ner.models.bert_ner import BERT_NER
 from ner.utils import masked_sparse_categorical_crossentropy, get_accuracy_no_other_mask
-from ner.kl_divergance_loss.data_distribution_kl_divergance import get_unlabelled_data_distribution, calculate_data_distribution_kl_loss
+
 
 class BERT_NER_Traininer():
     def __init__(self, word_id_field='word_id', mask_field='mask', segment_id_field='segment_id', tag_id_field='tag_id', **kwargs):

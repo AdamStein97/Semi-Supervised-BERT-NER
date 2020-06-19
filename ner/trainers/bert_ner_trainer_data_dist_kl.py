@@ -4,7 +4,7 @@ import os
 import ner
 from ner.models.bert_ner import BERT_NER
 from ner.utils import masked_sparse_categorical_crossentropy, get_accuracy_no_other_mask
-from ner.kl_divergance_loss.data_distribution_kl_divergance import get_unlabelled_data_distribution, calculate_data_distribution_kl_loss
+from ner.kl_loss import get_reduced_label_distribution, calculate_data_distribution_kl_loss
 
 class BERT_NER_TraininerDataDistKL():
     def __init__(self, label_distribution=None, word_id_field='word_id', mask_field='mask', segment_id_field='segment_id', tag_id_field='tag_id', **kwargs):
@@ -49,7 +49,7 @@ class BERT_NER_TraininerDataDistKL():
     @tf.function
     def train_kl_step(self, x, model, kl_optimizer, **kwargs):
         with tf.GradientTape() as tape:
-            q_j = get_unlabelled_data_distribution(model, x, **kwargs)
+            q_j = get_reduced_label_distribution(model, x, **kwargs)
 
             loss = calculate_data_distribution_kl_loss(self.label_distribution, q_j)
 

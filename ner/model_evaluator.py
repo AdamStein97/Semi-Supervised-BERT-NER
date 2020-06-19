@@ -4,11 +4,14 @@ import pandas as pd
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import seaborn as sns; sns.set()
+import os
+import ner
 
 
 class ModelEvaluator():
-    def __init__(self, test_ds, id2tag=None, label_distribution=None):
+    def __init__(self, test_ds, id2tag=None, label_distribution=None, results_name='model'):
         self.test_ds = test_ds
+        self.results_name = results_name
         if id2tag is None:
             id2tag = {
               1: 'O',
@@ -27,18 +30,15 @@ class ModelEvaluator():
 
         self.id2tag = id2tag
         self.label_distribution = label_distribution
-        self.ids = list(id2tag.values())
+        self.ids = list(id2tag.keys())
 
 
     def get_confusion_matricies_from_numpy(self, y_true_flat, y_pred_flat):
-        label_filter = np.squeeze([label != 0 for label in y_true_flat])
-        y_true_filtered = np.squeeze(y_true_flat[label_filter])
-        y_pred_filtered = np.squeeze(y_pred_flat[label_filter])
-        pred_norm_cm = confusion_matrix(y_true_filtered, y_pred_filtered, labels=self.ids, normalize='pred')
-        true_norm_cm = confusion_matrix(y_true_filtered, y_pred_filtered, labels=self.ids, normalize='true')
+        pred_norm_cm = confusion_matrix(y_true_flat, y_pred_flat, labels=self.ids, normalize='pred')
+        true_norm_cm = confusion_matrix(y_true_flat, y_pred_flat, labels=self.ids, normalize='true')
         return pred_norm_cm, true_norm_cm
 
-    def plot_confusion(self, matrix):
+    def plot_confusion(self, matrix, matrix_name='confusion_matrix'):
         matrix = np.round(matrix, 2)
 
         mat_df = pd.DataFrame()
@@ -55,6 +55,8 @@ class ModelEvaluator():
         b += 0.5 # Add 0.5 to the bottom
         t -= 0.5 # Subtract 0.5 from the top
         plt.ylim(b, t) # update the ylim(bottom, top) values
+        plt.title(matrix_name)
+        plt.savefig(os.path.join(ner.RESULTS_DIR, self.results_name + matrix_name + ".png"))
         plt.show()
 
     def get_results_df(self, pred_norm_cm, true_norm_cm, y_pred_flat=None):
@@ -62,13 +64,13 @@ class ModelEvaluator():
         recall = np.diagonal(pred_norm_cm)
         results_df = pd.DataFrame({"Precision": prec, "Recall": recall})
         results_df['F1'] = results_df.apply(lambda x: (2 * x["Precision"] * x["Recall"]) / (x["Precision"] + x["Recall"]), axis=1).fillna(0)
-        results_df['Catgegory'] = self.ids
+        results_df['Catgegory'] = list(self.id2tag.values())
         results_df['True Label Distribution'] = np.round(self.label_distribution, 4)
         if y_pred_flat is not None:
             pred_labels_occurances = [ np.round(y_pred_flat.tolist().count(i) / len(y_pred_flat), 4) for i in range(1,10)]
             results_df['Pred Label Distribution'] = pred_labels_occurances
 
-        return results_df
+        return round(results_df, 3)
 
     def get_test_ds_labels(self, model):
         y_true_numpy = None
@@ -91,18 +93,19 @@ class ModelEvaluator():
         label_filter_0 = y_true_flat != 0
         y_true_flat = y_true_flat[label_filter_0]
         y_pred_flat = y_pred_flat[label_filter_0]
-        pred_norm_cm, true_norm_cm = self.get_confusion_matricies_from_numpy(y_true_numpy, y_pred_numpy)
-        print("Pred Norm CM")
-        self.plot_confusion(pred_norm_cm)
-        print("True Norm CM")
-        self.plot_confusion(true_norm_cm)
+        pred_norm_cm, true_norm_cm = self.get_confusion_matricies_from_numpy(y_true_flat, y_pred_flat)
+        self.plot_confusion(pred_norm_cm, "Pred_Norm_CM")
+        self.plot_confusion(true_norm_cm, "True_Norm_CM")
 
         print("Category Results\n")
         results_df = self.get_results_df(pred_norm_cm, true_norm_cm, y_pred_flat)
         print(results_df)
+        results_df.to_csv(os.path.join(ner.RESULTS_DIR, self.results_name + "_results.csv"))
 
         print("\nResults Describe\n")
-        print(results_df.describe()[["Precision",  "Recall", "F1"]])
+        describe_df = results_df.describe()[["Precision",  "Recall", "F1"]][1:]
+        print(describe_df)
+        describe_df.to_csv(os.path.join(ner.RESULTS_DIR, self.results_name + "_describe_results.csv"))
 
         print("\n")
         acc = 100 * np.sum(y_true_flat == y_pred_flat) / len(y_true_flat)
