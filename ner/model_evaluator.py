@@ -39,7 +39,7 @@ class ModelEvaluator():
         all_pred_labels = []
         for x in self.test_ds.take(take):
             label = x['tag_id']
-            encoding, pred_labels = model(x['word_id'], x['segment_id'], x['mask'])
+            encoding, pred_labels = model(input_word_ids=x['word_id'], segment_ids=x['segment_id'], input_mask=x['mask'])
             word_encoding = tf.reshape(encoding, [BATCH_SIZE * max_seq_length, -1])
             word_labels = tf.reshape(label, [BATCH_SIZE * max_seq_length, -1])
             pred_labels = tf.argmax(tf.reshape(pred_labels, [BATCH_SIZE * max_seq_length, -1]), axis=-1)
@@ -136,7 +136,7 @@ class ModelEvaluator():
         y_pred_numpy = None
         for i, x in enumerate(self.test_ds):
             label = x['tag_id']
-            _, pred_y = model(x['word_id'], x['segment_id'], x['mask'])
+            _, pred_y = model(input_word_ids=x['word_id'], segment_ids=x['segment_id'], input_mask=x['mask'])
             pred_labels = tf.argmax(pred_y, axis=-1)
             if i == 0:
               y_true_numpy = label.numpy()

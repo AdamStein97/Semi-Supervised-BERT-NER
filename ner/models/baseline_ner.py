@@ -18,7 +18,7 @@ class BaselineNER(tf.keras.Model):
         self.encode_layer = tf.keras.layers.Dense(latent_dim)
         self.categorise_layer = tf.keras.layers.Dense(categories, activation='softmax')
 
-    def call(self, input_word_ids):
+    def call(self, input_word_ids, **kwargs):
         sequence_output = self.embed_layer(input_word_ids)
         for layer in self.mlp:
             sequence_output = layer(sequence_output)
