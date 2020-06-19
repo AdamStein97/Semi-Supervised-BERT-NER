@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.metrics import confusion_matrix
+from sklearn.decomposition import PCA
 import pandas as pd
 import tensorflow as tf
 import matplotlib.pyplot as plt
@@ -32,6 +33,64 @@ class ModelEvaluator():
         self.label_distribution = label_distribution
         self.ids = list(id2tag.keys())
 
+    def get_2d_encodings(self, model, pca=None, take=10, filter_O=True, BATCH_SIZE=128, max_seq_length=50, **kwargs):
+        all_encoded_words = []
+        all_encoded_labels = []
+        all_pred_labels = []
+        for x in self.test_ds.take(take):
+            label = x['tag_id']
+            encoding, pred_labels = model(x['word_id'], x['segment_id'], x['mask'])
+            word_encoding = tf.reshape(encoding, [BATCH_SIZE * max_seq_length, -1])
+            word_labels = tf.reshape(label, [BATCH_SIZE * max_seq_length, -1])
+            pred_labels = tf.argmax(tf.reshape(pred_labels, [BATCH_SIZE * max_seq_length, -1]), axis=-1)
+            all_encoded_words.append(word_encoding.numpy())
+            all_encoded_labels.append(word_labels.numpy())
+            all_pred_labels.append(pred_labels.numpy())
+
+        words = np.concatenate(tuple(all_encoded_words))
+        labels = np.concatenate(tuple(all_encoded_labels))
+        pred_labels = np.concatenate(tuple(all_pred_labels))
+
+        if filter_O:
+            label_fil = np.squeeze([label != 0 and label != 1 for label in labels])
+        else:
+            label_fil = np.squeeze([label != 0 for label in labels])
+
+        words = words[label_fil]
+        labels = labels[label_fil]
+        pred_labels = pred_labels[label_fil]
+
+        if pca is None:
+            pca = PCA(n_components=2)
+            pca.fit(words)
+
+        reduced_x = pca.transform(words)
+        return pca, reduced_x, labels, pred_labels #labels_tag, pred_labels_tag
+
+    def plot_latent(self, x_2d, labels, save_name="latent_space.png"):
+        fig, ax = plt.subplots(figsize=(10, 10))
+
+        scatter = ax.scatter(x_2d[:, 0], x_2d[:, 1], c=np.squeeze(labels))
+
+        # # produce a legend with the unique colors from the scatter
+        legend1 = ax.legend(*scatter.legend_elements(),
+                            loc="lower left", title="Classes")
+        plt.xlim(-20, 20)
+        plt.ylim(-20, 20)
+
+        legend_items = np.sort(np.unique(labels))
+
+        for i in range(len(legend1.get_texts())):
+            legend1.get_texts()[i].set_text(self.id2tag[legend_items[i]])
+
+
+        plt.savefig(os.path.join(ner.RESULTS_DIR, save_name))
+        plt.show()
+
+    def plot_all_latent_images(self, model, **kwargs):
+        _, x_2d, labels, pred_labels = self.get_2d_encodings(model, filter_O=False, **kwargs)
+        self.plot_latent(x_2d, pred_labels, save_name=self.results_name + "_predicted_labels_2d.png")
+        self.plot_latent(x_2d, labels, save_name=self.results_name + "_true_labels_2d.png")
 
     def get_confusion_matricies_from_numpy(self, y_true_flat, y_pred_flat):
         pred_norm_cm = confusion_matrix(y_true_flat, y_pred_flat, labels=self.ids, normalize='pred')

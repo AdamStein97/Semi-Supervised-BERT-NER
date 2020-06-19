@@ -13,18 +13,18 @@ def get_flattened_label_distribution(model, batch, BATCH_SIZE=128, max_seq_lengt
   return q_ij
 
 @tf.function
-def get_reduced_label_distribution(**kwargs):
-  q_ij = get_flattened_label_distribution(**kwargs)
+def get_reduced_label_distribution(model, batch, **kwargs):
+  q_ij = get_flattened_label_distribution(model, batch, **kwargs)
   q_ij_mask = tf.expand_dims(tf.cast(tf.logical_not(tf.math.equal(tf.reduce_sum(q_ij, axis=-1), 0.0)), tf.float32), axis=-1)
   q_j = reduce_mean_masked(q_ij, q_ij_mask, axis=0)
   return q_j
 
 @tf.function
 def get_cluster_strength_prior(qij, eps=1e-9):
-  f_j = tf.reduce_sum(qij, axis=0, keepdims=True)
+  f_j = tf.reduce_sum(qij, axis=0)
   qij_squared = qij ** 2
   qij_squared_normed = qij_squared / (f_j + eps)
-  pij = qij_squared_normed / tf.reduce_sum(qij_squared_normed + eps, axis=0)
+  pij = qij_squared_normed / tf.reduce_sum(qij_squared_normed + eps, axis=1, keepdims=True)
   return pij
 
 @tf.function

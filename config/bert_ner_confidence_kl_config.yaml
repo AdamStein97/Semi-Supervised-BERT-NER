@@ -1,0 +1,9 @@
+EPOCHS: 8
+batches_per_epoch: 10
+latent_dim: 32
+rate: 0.0
+mlp_dims: [256, 128, 64]
+ner_lr: 0.001
+kl_lr: 0.001
+model_start_weights_filename: 'BERT_NER_final'
+model_save_weights_name: 'BERT_NER_confidence_kl'
