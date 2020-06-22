@@ -180,7 +180,9 @@ word is seen to be independent in a sentence.
 
 Model |True Labels            |  Predicted Labels
 :-------------------------:|:-------------------------:|:-------------------------:
-BERT NER | <img src="results/BERT/BERT_true_labels_2d.png" height="360" width="360"> | <img src="results/BERT/BERT_predicted_labels_2d.png" height="360" width="360">
+BERT NER | <img src="results/BERT/BERT_true_labels_2d.png" height="450" width="450"> | <img src="results/BERT/BERT_predicted_labels_2d.png" height="450" width="450">
+BERT NER Data Distribution KL | <img src="results/BERT_data_dist_kl/BERT_true_labels_2d.png" height="450" width="450"> | <img src="results/BERT_data_dist_kl/BERT_predicted_labels_2d.png" height="450" width="450">
+BERT NER Confidence KL | <img src="results/BERT_confidence_kl/BERT_true_labels_2d.png" height="450" width="450"> | <img src="results/BERT_confidence_kl/BERT_predicted_labels_2d.png" height="450" width="450">
 
 
 ### Evaluation
