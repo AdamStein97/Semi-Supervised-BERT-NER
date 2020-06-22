@@ -18,9 +18,45 @@ data to match the expected probability distribution of the data.
 
 ## Motivation
 
-High Level motivation
+Identifying named entities in a sentence is a common task in NLP pipelines. There are
+an extensive set of datasets available online with marked entities such as famous person 
+or geographic location but often more bespoke categories are needed for particular application.
+An example of this could be a chatbot application which may begin processing a message
+from a user by labelling problem specific relevant entities in their message. Often the process
+of labelling this data must be done laboriously internally especially in a PoC phase. 
+This results in there being only a small amount of labelled data with the potential addition 
+of unlabelled data.
+
+The aim behind this project is to design a solution to learn as much as possible from 
+the small amount of labelled data without over-fitting as well as leveraging 
+unlabelled data to improve generalisation to unseen data.
+
+## Solution Components
 
 ### BERT Model
+
+Learning representation for words on large corpora which are applicable across many NLP application has 
+been an active area of research in the last decade. A large recent success came from Mikolov et al. [1] and Pennington et al. [2]
+in using deep neural networks to produce the pre-train word embeddings Word2Vec and GloVe respectively.
+These representation were hugely popular across the NLP field and gave a considerable boost in 
+performance of the naive one-hot encoding approach especially when training data is limited.
+
+More recently, a huge breakthrough in learned representation by Devlin et al. with the 
+design of the BERT model [3]. The model comprises of 12 transformer layers and learns a 
+representation for the context of a word in a given sentence. For different downstream tasks, 
+minimal additional parameter are added and the whole model is fine tuned to the data. This
+differs from the use of the pre-trained word embeddings such as GloVe which are kept static 
+during optimisation in a downstream task.
+
+The pre-trained BERT model has achieved state-of-the-art performance on a number of NLP
+tasks seems like the most appropriate architecture for the NER problem especially when data 
+is limited. However, fine tuning hundreds of millions of parameters requires considerable
+computing power that was not available for this project. Lan et al. developed a lighter 
+version of BERT called ALBERT by using factorising embedding parameterisation and 
+cross-layer parameter sharing [4] but this was still considered to be too heavy. As a work
+around, the pre-trained BERT layers were kept fixed with an additional MLP added to fine tune
+the BERT output embeddings to solve the named entity recognition task. The precise architecture 
+can be found in section X.X. 
 
 ### Confidence KL Regularizer
 
@@ -29,6 +65,8 @@ High Level motivation
 ## Data
 
 ## Implementation Details
+
+### Precise Architecture
 
 ### Optimisation
 
@@ -46,12 +84,9 @@ Mention epsilon divides
 | BERT NER Confidence KL | __96.05%__  |  80.82% | __0.6514__  | 
 | BERT NER Data Distribution KL  | 94.44%  | __83.50%__  | 0.6320 | 
 
-### Masking
-
 ### Latent Space Representations
 
 ### Evaluation
-
 
 ## Future Work
 
@@ -60,3 +95,5 @@ Mention epsilon divides
 ## Run
 
 ## Library Structure
+
+## References
