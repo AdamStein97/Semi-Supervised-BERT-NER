@@ -9,13 +9,13 @@ leverage the unlabelled data to help the model generalise to unseen data.
 - __NER Baseline__: A simple approach to predicted named entity labels through a MLP
 - __BERT NER__: Words are encoded using a static pre-trained BERT layer, a MLP on top 
 predicts the named entity label
+- __BERT NER Data Distribution KL__: Same architecture as `BERT NER` but in the final epochs of
+training a KL term is introduced to encourage predicted labels for the unlabelled
+data to match the expected probability distribution of the data. 
 - __BERT NER Confidence KL__: Same architecture as `BERT NER` but in the final epochs of
 training a KL term is introduced to encourage the model to have high confidence when 
 predicting the unlabelled training examples
-- __BERT NER Data Distribution KL__: Same architecture as `BERT NER` but in the final epochs of
-training a KL term is introduced to encourage predicted labels for the unlabelled
-data to match the expected probability distribution of the data.  
-
+ 
 ## Motivation
 
 Identifying named entities in a sentence is a common task in NLP pipelines. There are
@@ -83,6 +83,24 @@ for the cross entropy loss on the labelled data in the later stages of training.
 
 ### Confidence KL Regularizer
 
+The second KL regularizer explored was designed to reward a model that had high confidence 
+in the predicted labels made on the unlabelled data. The model will use the unlabelled data to
+produce better representations of the words that are more generalisable. Xie et al. proposed the
+following prior to encourage confidence in unsupervised cluster assignment [5]: 
+
+![Alt text](read_me_equations/confidence_prior.gif) 
+
+![Alt text](read_me_equations/f_l.gif) 
+
+where <img src="https://render.githubusercontent.com/render/math?math=i"> is the index of 
+the word in the flattened batch of 128 sentences. Xie devised calculated <img src="https://render.githubusercontent.com/render/math?math=q"> from
+distance metrics to cluster centroids whereas we continue to use the probabilities produced by
+the softmax layer of the network. The KL loss is defined by:
+
+![Alt text](read_me_equations/confidence_kl.gif) 
+
+This loss is optimised on batches of the unlabelled data on alternating steps with the optimisation
+for the cross entropy loss on the labelled data in the later stages of training.
 
 ## Data
 
@@ -105,8 +123,8 @@ Mention epsilon divides
 |---|---|---|---|
 | NER Baseline  | 93.65% |  66.73% | 0.5457  |
 | BERT NER | 95.90% | 78.41%  | 0.6099 | 
-| BERT NER Confidence KL | __96.05%__  |  80.82% | __0.6514__  | 
 | BERT NER Data Distribution KL  | 94.44%  | __83.50%__  | 0.6320 | 
+| BERT NER Confidence KL | __96.05%__  |  80.82% | __0.6514__  | 
 
 ### Latent Space Representations
 
