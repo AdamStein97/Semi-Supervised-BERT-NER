@@ -180,9 +180,9 @@ word is seen to be independent in a sentence.
 
 Model |True Labels            |  Predicted Labels
 :-------------------------:|:-------------------------:|:-------------------------:
-BERT NER | <img src="results/BERT/BERT_true_labels_2d.png" height="400" width="400"> | <img src="results/BERT/BERT_predicted_labels_2d.png" height="400" width="400">
-BERT NER Data Distribution KL | <img src="results/BERT_data_dist_kl/BERT_data_dist_kl_true_labels_2d.png" height="400" width="400"> | <img src="results/BERT_data_dist_kl_data_dist_kl/BERT_predicted_labels_2d.png" height="400" width="400">
-BERT NER Confidence KL | <img src="results/BERT_confidence_kl/BERT_confidence_kl_true_labels_2d.png" height="400" width="400"> | <img src="results/BERT_confidence_kl/BERT_confidence_kl_predicted_labels_2d.png" height="400" width="400">
+BERT NER | <img src="results/BERT/BERT_true_labels_2d.png" height="450" width="450"> | <img src="results/BERT/BERT_predicted_labels_2d.png" height="450" width="450">
+BERT NER Data Distribution KL | <img src="results/BERT_data_dist_kl/BERT_data_dist_kl_true_labels_2d.png" height="450" width="450"> | <img src="results/BERT_data_dist_kl/BERT_data_dist_kl_predicted_labels_2d.png" height="450" width="450">
+BERT NER Confidence KL | <img src="results/BERT_confidence_kl/BERT_confidence_kl_true_labels_2d.png" height="450" width="450"> | <img src="results/BERT_confidence_kl/BERT_confidence_kl_predicted_labels_2d.png" height="450" width="450">
 
 
 ### Evaluation
