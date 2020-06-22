@@ -58,11 +58,35 @@ around, the pre-trained BERT layers were kept fixed with an additional MLP added
 the BERT output embeddings to solve the named entity recognition task. The precise architecture 
 can be found in section X.X. 
 
-### Confidence KL Regularizer
-
 ### Data Distribution KL Regularizer
 
+The Kullback–Leibler (KL) divergence is a measure of how one probability distribution is different 
+from another. Often in our data we can estimate a prior distribution for the categorical labels 
+by observing our labelled data or from knowledge of an industry e.g. roughly knowing the
+percentage of credit transactions which are fraudulent. The proposed Data Distribution KL Regularizer
+is designed to leverage this prior knowledge in combination with the predictions on the unalbelled
+data to improve the generalisation of the model. 
+
+We aim for the distribution of our model assigned labels, <img src="https://render.githubusercontent.com/render/math?math=q(l)">,
+to replicate our prior distribution, <img src="https://render.githubusercontent.com/render/math?math=p(l)">, 
+on the unlabelled data. We estimate <img src="https://render.githubusercontent.com/render/math?math=q"> by:
+
+![Alt text](read_me_equations/q_l.gif)
+
+where <img src="https://render.githubusercontent.com/render/math?math=i"> is the index of 
+the word in the flattened batch of 128 sentences. The KL loss is defined by:
+
+![Alt text](read_me_equations/data_dist_kl.gif)
+
+This loss is optimised on batches of the unlabelled data on alternating steps with the optimisation
+for the cross entropy loss on the labelled data in the later stages of training.
+
+### Confidence KL Regularizer
+
+
 ## Data
+
+### Prior
 
 ## Implementation Details
 
