@@ -159,7 +159,7 @@ the BERT layer was also trained for comparison. The MLP layers in this model
 are the same as described in Section x.x. This is a simple baseline model where each 
 word is seen to be independent in a sentence.
 
-### Metics
+### Metrics
 
 | Metric  | Description  | 
 |---|---|
@@ -177,6 +177,13 @@ word is seen to be independent in a sentence.
 | BERT NER Confidence KL | __96.05%__  |  80.82% | __0.6514__  | 
 
 ### Latent Space Representations
+
+![](results/BERT/BERT_predicted_labels_2d.png)
+
+<img src="results/BERT/BERT_predicted_labels_2d.png" height="270" width="270">
+
+
+
 
 ### Evaluation
 
