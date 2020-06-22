@@ -178,9 +178,8 @@ word is seen to be independent in a sentence.
 
 ### Latent Space Representations
 
-![](results/BERT/BERT_predicted_labels_2d.png)
-
-<img src="results/BERT/BERT_predicted_labels_2d.png" height="270" width="270">
+<img src="results/BERT/BERT_true_labels_2d.png" height="360" width="360">
+<img src="results/BERT/BERT_predicted_labels_2d.png" height="360" width="360">
 
 
 
