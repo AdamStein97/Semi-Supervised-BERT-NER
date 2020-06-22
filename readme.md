@@ -104,20 +104,70 @@ for the cross entropy loss on the labelled data in the later stages of training.
 
 ## Data
 
-### Prior
+The data consists of 48,000 sentences from newspaper articles with the following 
+labelled named entities:
+
+| Tag  | Description  | % in data | 
+|---|---|---|
+| O  | Other |  84.68% |
+| geo | Geographical Entity | 4.3%  |
+| gpe  | Geopolitical Entity  | 1.53%  |
+| per | Person |  3.27% | 
+| org  | Organization |  3.52% |
+| tim | Time indicator | 2.56%  |
+| art  | Artifact  | 0.07%  |
+| nat | Natural Phenomenon  |  0.02% | 
+| eve | Event  |  0.05% | 
+
+The labelled training dataset consists of 2,560 random sentences, there are 9,600 sentences in the test set.
+All the data is labelled but to simulate a case where we have unlabelled data, we ignore the labels
+on the remaining 36,000 sentences. The data is placed into batches of size 128.
 
 ## Implementation Details
 
 ### Precise Architecture
 
+The 12 layer trained BERT model was downloaded from tf_hub at the following URL: https://tfhub.dev/tensorflow/bert_en_uncased_L-12_H-768_A-12.
+The multi-layered perceptron on top has 3 layers of size 256, 128 and 64 with relu activation.
+There is then a dense layer of size 32 with no activation which represents the latent space to visualise the data
+clusters that are forming. There is then a final dense layer with a softmax activation to assign the probabilities
+of the labels.
+
 ### Optimisation
+
+The BERT NER is trained over 20 epochs on the training dataset (400 batches); after this point the model began to over-fit.
+For the models with KL divergence, the BERT NER is then fine tuned by doing a gradient descent on the KL divergence 
+using an unlabelled batch and then a gradient descent on the cross entropy loss on a labelled batch. This
+process is repeated for 40 labelled and unlabelled batches for the data distribution KL model and
+80 labelled and unlabelled batches for the confidence KL model respectively.
 
 ### Tokenisation
 
+The tokenisation of the sentences is done using the tokenizer from the `bert-for-tf2` library.
+All words are lower cased. 
+
 ### Masking
-Mention epsilon divides
+Sentences are padded such that they all have a length of 50. These padded token are ignored when 
+optimising both cross entropy loses and KL divergence terms. Very small epsilons are added
+to denominators of calculations on the probability because the probability on labels of 
+masked tokens are set to zero.
 
 ## Results
+
+A baseline model that uses an embedding layer of size 784 instead of 
+the BERT layer was also trained for comparison. The MLP layers in this model 
+are the same as described in Section x.x. This is a simple baseline model where each 
+word is seen to be independent in a sentence.
+
+### Metics
+
+| Metric  | Description  | 
+|---|---|
+| Validation Accuracy  | Overall accuracy on the full test set | 
+| Validation Accuracy no Other | Overall accuracy on the full test set when words with ground truth tag of O are removed |
+| Validation Mean F1  | The mean F1 score across all categories | 
+
+### Model Performance
 
 | Model Name  | Validation Accuracy  | Validation Accuracy no Other |  Validation Mean F1 | 
 |---|---|---|---|
