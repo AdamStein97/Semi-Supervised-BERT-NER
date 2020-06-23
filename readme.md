@@ -1,7 +1,7 @@
 # Semi-Supervised Named Entity Recognition with BERT and KL Regularizers
 
 An exploration in using the pre-trained BERT model to perform Named Entity Recognition 
-(NER) where labelled training data is limited but there is a considerable amount of unalabelled data.
+(NER) where labelled training data is limited but there is a considerable amount of unlabelled data.
 Two different regularisation terms using Kullback–Leibler (KL) divergence are proposed that aim to 
 leverage the unlabelled data to help the model generalise to unseen data.
 
@@ -248,6 +248,8 @@ Activate Environment: `conda activate nerbert`
 Make Install Executable: `chmod +x install.sh`
 
 Install Requirements: `./install.sh`
+
+Save All Models To `saved_models` Directory From: https://drive.google.com/drive/folders/1HgHJtuW1fOuO8bWxSAxTZZQL48FW-rRI?usp=sharing
 
 ## 8. Run
 
