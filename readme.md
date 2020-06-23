@@ -245,6 +245,8 @@ Create Environment: `conda create --name nerbert python=3.6`
 
 Activate Environment: `conda activate nerbert`
 
+Make Install Executable: `chmod +x install.sh`
+
 Install Requirements: `./install.sh`
 
 ## 8. Run
